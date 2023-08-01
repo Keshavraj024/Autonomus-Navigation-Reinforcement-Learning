@@ -8,6 +8,8 @@ import pickle
 from car_env import CarEnv
 from lane_detection import LaneDetection
 from dql_agent import DQLAgent
+import tensorflow as tf
+import logging
 
 cap =  cv2.VideoCapture(1)
 ser = serial.Serial('/dev/ttyACM0',9600)
@@ -24,7 +26,7 @@ def main():
     env = CarEnv()
     lane = LaneDetection()
     env.run("a")
-    print("Automatic mode is active")
+    logging.info("Automatic mode is active")
 
     try:
         iteration_rewards = [-200]
@@ -56,7 +58,7 @@ def main():
                     stop = True
 
                 else:
-                    print(agent.get_qs(current_state))
+                    logging.info(agent.get_qs(current_state))
                     action = np.argmax(agent.get_qs(current_state))
                     stop = False
 
@@ -85,19 +87,21 @@ def main():
         pkl_filename = "model_real.pkl"
         with open(pkl_filename, 'wb') as file:
             pickle.dump(agent.model, file)
-        print("Saved model to disk")
+        logging.info("Saved model to disk")
 
     finally:
-        print('Terminated')
+        logging.info('Terminated')
 
 
 if __name__ == "__main__":
     try:
+        logger = logging.getLogger()
+        logger.setLevel(logging.INFO)
         main()
     except KeyboardInterrupt:
         pass
     finally:
-        print("Done")
+        logging.info("Done")
         ser.write("a".encode())
         cap.release()
         cv2.destroyAllWindows()

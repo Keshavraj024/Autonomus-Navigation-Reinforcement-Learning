@@ -5,7 +5,7 @@ from collections import deque
 from threading import Thread
 from keras.models import Sequential
 from keras.layers import Dense, Conv2D, AveragePooling2D, Activation, Flatten
-from keras.optimizers import Adam
+import time
 
 class DQLAgent:
     """Class representing the RL agent."""
